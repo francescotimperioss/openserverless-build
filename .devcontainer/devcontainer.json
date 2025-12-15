@@ -16,7 +16,7 @@
 // under the License.
 {
 	"name": "openserverless",
-	"image": "ghcr.io/francescotimperi/devow:ops-jdk17.25060220",
+	"image": "ghcr.io/francescotimperioss/devow:ops-jdk17.25121800",
 	//"build": { "dockerfile": "Dockerfile" },
 	"mounts": [
 		"source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind",

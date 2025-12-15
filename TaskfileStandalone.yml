@@ -42,8 +42,8 @@ tasks:
       - kind load docker-image whisk/invoker:latest --name=nuvolaris
 
   devow-build:
-    - docker build .devcontainer -t ghcr.io/nuvolaris/devow:{{.TAG}}
-    - docker push ghcr.io/francescotimperi/devow:{{.TAG}}
+    - docker build .devcontainer -t ghcr.io/francescotimperioss/devow:{{.TAG}}
+    - docker push ghcr.io/francescotimperioss/devow:{{.TAG}}
 
   devow-in:
     - >
