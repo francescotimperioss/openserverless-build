@@ -16,15 +16,14 @@
 // under the License.
 {
 	"name": "openserverless",
-	"image": "ghcr.io/francescotimperioss/devow:2026.06",
-	//"build": { "dockerfile": "Dockerfile" },
+	"image": "ghcr.io/francescotimperioss/devow:2607",
 	"mounts": [
 		"source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind",
-		"type=bind,source=${env:HOME}/.ssh,target=/home/openserverless/.ssh",
+		"type=bind,source=${localEnv:HOME}/.ssh,target=/home/openserverless/.ssh",
 		"source=/var/tmp,target=/var/tmp,type=bind"
 	],
 	"containerEnv": {
-    	"DOCKER_HOST": "unix:///var/run/docker.sock"
+		"DOCKER_HOST": "unix:///var/run/docker.sock"
 	},
 	"remoteUser": "openserverless",
 	"overrideCommand": false,
@@ -35,13 +34,9 @@
 				"oderwat.indent-rainbow",
 				"eamodio.gitlens",
 				"mhutchie.git-graph",
-				"scalameta.metals", 
+				"scalameta.metals",
 				"vscjava.vscode-java-test"
 			]
 		}
-	},
-	"runArgs": [
-			"--network", "host",
-			"--add-host", "host.docker.internal:127.0.0.1"
-	]
+	}
 }

@@ -106,7 +106,9 @@ RUN update-alternatives --install /usr/bin/javac javac $GRAALVM_HOME/bin/javac 1
 RUN java -version
 RUN native-image --version
     
-RUN useradd -m openserverless -s /bin/bash ;\
+RUN groupadd -g 998 docker || true ;\
+    useradd -m openserverless -s /bin/bash ;\
+    usermod -aG docker openserverless ;\
     echo "openserverless ALL=(ALL:ALL) NOPASSWD: ALL" >>/etc/sudoers
 # node
 RUN curl -sL https://deb.nodesource.com/setup_22.x | bash ;\
@@ -131,7 +133,12 @@ RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
     fi
 
 ENV HOME=/home/openserverless
+ENV DOCKER_HOST=unix:///var/run/docker.sock
 ENV ANSIBLE_CMD="ansible-playbook -i environments/local -e docker_image_prefix=testing -e container_pool_akka_client=false"
 ENV GRADLE_PROJS_SKIP=""
+
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 WORKDIR /home/openserverless
-ENTRYPOINT [ "/usr/bin/socat","UNIX-LISTEN:/var/run/docker.sock,fork,mode=660,user=openserverless","UNIX-CONNECT:/var/run/docker-host.sock" ]    
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
