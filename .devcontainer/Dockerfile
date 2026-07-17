@@ -43,11 +43,32 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python ;\
     python get-pip.py ;\
     python -m pip install docker==5.0.0 ansible==2.8.18 jinja2==3.0.1 couchdb==1.2 httplib2==0.19.1 requests==2.25.1 six==1.16.0 flake8
 # docker
-RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu bionic stable" > /etc/apt/sources.list.d/docker.list ;\
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor > /usr/share/keyrings/docker-archive-keyring.gpg ;\
-    apt-get update && apt-get -y install docker-ce-cli 
+#RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu bionic stable" > /etc/apt/sources.list.d/docker.list ;\
+#    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor > /usr/share/keyrings/docker-archive-keyring.gpg ;\
+#    apt-get update && apt-get -y install docker-ce-cli 
+
+# -----------------------------------------------------------------------------
+# Docker CLI + Buildx
+# -----------------------------------------------------------------------------
+ARG DOCKER_VERSION=5:28.1.1-1~ubuntu.22.04~jammy
+RUN install -m 0755 -d /etc/apt/keyrings && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+      | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+    chmod a+r /etc/apt/keyrings/docker.gpg && \
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+      https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo $VERSION_CODENAME) stable" \
+      > /etc/apt/sources.list.d/docker.list && \
+    apt-get update && \
+    apt-get install -y \
+        docker-ce-cli=${DOCKER_VERSION} \
+        docker-buildx-plugin \
+        docker-compose-plugin && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 # protobuf setup
-RUN apt-get -y install protobuf-compiler
+RUN apt-get update && apt-get -y install protobuf-compiler && rm -rf /var/lib/apt/lists/*
 
 # install graalvm
 ENV GRAALVM_HOME=/opt/graalvm
