@@ -23,6 +23,9 @@
 		"type=bind,source=${env:HOME}/.ssh,target=/home/openserverless/.ssh",
 		"source=/var/tmp,target=/var/tmp,type=bind"
 	],
+	"containerEnv": {
+    	"DOCKER_HOST": "unix:///var/run/docker.sock"
+	},
 	"remoteUser": "openserverless",
 	"overrideCommand": false,
 	"customizations": {
